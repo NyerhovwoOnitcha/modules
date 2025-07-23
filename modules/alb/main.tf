@@ -90,39 +90,9 @@ resource "aws_lb_listener" "http" {
 }
 
 
-# listener rule
-# resource "aws_lb_listener_rule" "lb-listener-rule" {
-#   count        = length(var.listener_conditions) > 0 ? 1 : 0
-#   listener_arn = var.target_group_protocol == "HTTPS" && var.certificate_arn != null ? aws_lb_listener.https[0].arn : aws_lb_listener.http[0].arn
-
-#   priority = var.listener_rule_priority
-
-#   action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.lb-tgt.arn
-#   }
-
-#   dynamic "condition" {
-#     for_each = var.listener_conditions
-#     content {
-#       dynamic "path_pattern" {
-#         for_each = lookup(condition.value, "path_pattern", [])
-#         content {
-#           values = path_pattern.value
-#         }
-#       }
-
-#       dynamic "host_header" {
-#         for_each = lookup(condition.value, "host_header", [])
-#         content {
-#           values = host_header.value
-#         }
-#       }
-#     }
-#   }
-# }
 
 
+# Listener rules for the ALB
 resource "aws_lb_listener_rule" "lb_listener_rules" {
   for_each = {
     for idx, cond in var.listener_conditions :
