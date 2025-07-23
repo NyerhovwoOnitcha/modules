@@ -87,6 +87,31 @@ variable "listener_conditions" {
   default     = []
 }
 
+variable "listener_rule_priority" {
+  type        = number
+  description = "Priority of the listener rule"
+  default     = 99
+}
+
+variable "enable_access_logs" {
+  type        = bool
+  description = "Enable ALB access logs"
+  default     = false
+}
+
+variable "access_logs_bucket" {
+  type        = string
+  description = "S3 bucket for ALB access logs"
+  default     = ""
+}
+
+variable "access_logs_prefix" {
+  type        = string
+  description = "Prefix for ALB access logs"
+  default     = ""
+}
+
+
 variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to resources"

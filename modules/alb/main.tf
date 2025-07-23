@@ -2,25 +2,28 @@
 resource "aws_lb" "ecom-alb" {
   name     = var.lb_name
   internal = false
-  security_groups = [
-    var.alb_sg
-  ]
-
-  subnets = var.public_subnets
+  security_groups = [var.alb_sg]
+  subnets         = var.public_subnets
 
   ip_address_type    = "ipv4"
   load_balancer_type = var.load_balancer_type
 
-  tags = merge(
-  var.tags,
-  {
-    Name        = var.lb_name
-    Environment = var.environment
-    Module      = var.module_name
+  access_logs {
+    enabled = var.enable_access_logs
+    bucket  = var.access_logs_bucket
+    prefix  = var.access_logs_prefix
   }
-)
 
+  tags = merge(
+    var.tags,
+    {
+      Name        = var.lb_name
+      Environment = var.environment
+      Module      = var.module_name
+    }
+  )
 }
+
 
 
 
@@ -88,11 +91,11 @@ resource "aws_lb_listener" "http" {
 
 
 # listener rule
-resource "aws_lb_listener_rule" "lb-listener-ruleI" {
+resource "aws_lb_listener_rule" "lb-listener-rule" {
   count        = length(var.listener_conditions) > 0 ? 1 : 0
-  listener_arn = listener_arn = var.target_group_protocol == "HTTPS" && var.certificate_arn != null ? aws_lb_listener.https[0].arn : aws_lb_listener.http[0].arn
+  listener_arn = var.target_group_protocol == "HTTPS" && var.certificate_arn != null ? aws_lb_listener.https[0].arn : aws_lb_listener.http[0].arn
 
-  priority     = 99
+  priority = var.listener_rule_priority
 
   action {
     type             = "forward"
@@ -113,16 +116,6 @@ resource "aws_lb_listener_rule" "lb-listener-ruleI" {
         for_each = lookup(condition.value, "host_header", [])
         content {
           values = host_header.value
-        }
-      }
-
-      dynamic "http_header" {
-        for_each = lookup(condition.value, "http_header", []) == {} ? [] : [lookup(condition.value, "http_header", {})]
-        content {
-          http_header {
-            name   = http_header.value.name
-            values = http_header.value.values
-          }
         }
       }
     }

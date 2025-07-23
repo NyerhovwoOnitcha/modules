@@ -17,6 +17,10 @@ module "alb" {
     environment = var.environment
     module_name = "alb" 
     loadbalancer_target = var.loadbalancer_target
+    listener_rule_priority = var.listener_rule_priority
+    enable_access_logs = var.enable_access_logs
+    access_logs_bucket = var.access_logs_bucket
+    access_logs_prefix = var.access_logs_prefix
 
     listener_conditions = [
         {
@@ -26,7 +30,7 @@ module "alb" {
         {
             path_pattern = ["/admin/*"]
         }
-        
+
     ]
    
   
