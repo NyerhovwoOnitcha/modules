@@ -90,7 +90,8 @@ resource "aws_lb_listener" "http" {
 # listener rule
 resource "aws_lb_listener_rule" "tooling-listener" {
   count        = length(var.listener_conditions) > 0 ? 1 : 0
-  listener_arn = aws_lb_listener.ecom-lb-listener.arn
+  listener_arn = listener_arn = var.target_group_protocol == "HTTPS" && var.certificate_arn != null ? aws_lb_listener.https[0].arn : aws_lb_listener.http[0].arn
+
   priority     = 99
 
   action {
