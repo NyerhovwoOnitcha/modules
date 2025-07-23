@@ -47,3 +47,47 @@ Each listener rule matches incoming requests against the conditions we set, and 
 ```
 - Count is again used to conditionally create resources. Means only create this rule if at least one listener condition is defined. It is dynamically skipped if no conditions are set.  
 
+- Loop through the listener conditions:
+```
+  for_each = {
+    for idx, cond in var.listener_conditions :
+    "${idx}" => cond
+  }
+
+```
+This takes the listener_conditions list (defined in variables file) and turns it into a map like below. Thus dynamically creating multiple rules, one per condition.
+```
+{
+  "0" = {
+    path_pattern = ["/api/*"],
+    host_header  = ["dev.example.com"],
+    priority     = 100
+  }
+}
+
+```
+- Attach to correct listener (HTTP or HTTPS)
+```
+  listener_arn = var.target_group_protocol == "HTTPS" && var.certificate_arn != null ?
+    aws_lb_listener.https[0].arn : aws_lb_listener.http[0].arn
+
+```
+This automatically using target_group_protocol and certificate_arn variables selects: The HTTPS listener if you're using HTTPS with a certificate, otherwise the HTTP listener.
+
+- Set rule priority: This pulls the priority from the individual object in listener_conditions
+```
+  priority = each.value.priority
+``` 
+
+- Action taken when the rule matches:  When a request matches this rule, it forwards traffic to the specified target group.
+
+```
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.lb-tgt.arn
+  }
+```
+
+
+
+
