@@ -20,11 +20,15 @@ module "alb" {
 
     listener_conditions = [
         {
-        path_pattern = ["/api/*"]
+            path_pattern = ["/api/*"]
+            host_header  = ["dev.example.com"]
         },
         {
-        host_header = ["dev.example.com"]
+            path_pattern = ["/admin/*"]
         }
+        
     ]
-    }
+   
+  
+}
 

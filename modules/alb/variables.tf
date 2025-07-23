@@ -82,7 +82,7 @@ variable "listener_conditions" {
       values = list(string)
     }))
   }))
-  
+
   description = "List of listener rule conditions"
   default     = []
 }
