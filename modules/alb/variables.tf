@@ -83,15 +83,26 @@ variable "listener_conditions" {
     }))
   }))
 
+variable "listener_conditions" {
+  type = list(object({
+    priority     = number
+    path_pattern = optional(list(string))
+    host_header  = optional(list(string))
+    http_header  = optional(object({
+      name   = string
+      values = list(string)
+    }))
+  }))
+  description = "Listener rule conditions"
+  default     = []
+}
+
+
   description = "List of listener rule conditions"
   default     = []
 }
 
-variable "listener_rule_priority" {
-  type        = number
-  description = "Priority of the listener rule"
-  default     = 99
-}
+
 
 variable "enable_access_logs" {
   type        = bool
