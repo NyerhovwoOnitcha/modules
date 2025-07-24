@@ -20,6 +20,10 @@ module "alb" {
     alb_sg              = module.alb_security_group.alb_sg_id
     vpc_id              = module.vpc.vpc_id
     public_subnets      = module.vpc.public_subnets
+    interval            = var.interval
+    healthy_threshold   = var.healthy_threshold
+    unhealthy_threshold = var.unhealthy_threshold
+    timeout             = var.timeout
 
     listener_conditions = [
         {

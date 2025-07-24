@@ -1,5 +1,5 @@
 # Create the ALB
-resource "aws_lb" "ecom-alb" {
+resource "aws_lb" "terraform-aws-alb" {
   name     = var.lb_name
   internal = false
   security_groups = [var.alb_sg]
@@ -30,13 +30,15 @@ resource "aws_lb" "ecom-alb" {
 # Create a target group for the ALB
 resource "aws_lb_target_group" "lb-tgt" {
   health_check {
-    interval            = 10
+    interval            = var.interval
+    healthy_threshold   = var.healthy_threshold
+    unhealthy_threshold = var.unhealthy_threshold
+    timeout             = var.timeout
     path                = var.health_check_path
     port                = var.target_group_port
     protocol            = var.target_group_protocol
-    timeout             = 5
-    healthy_threshold   = 5
-    unhealthy_threshold = 2
+
+    
   }
   name        = var.loadbalancer_target
   port        = var.target_group_port
@@ -138,5 +140,4 @@ resource "aws_lb_listener_rule" "lb_listener_rules" {
     }
   }
 }
-
 

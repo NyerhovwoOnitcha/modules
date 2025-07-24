@@ -139,3 +139,28 @@ variable "module_name" {
   description = "Name of the module"
   default     = "alb"
 }
+
+variable "interval" {
+  type        = number
+  description = "Health check interval in seconds"
+  default     = 30
+}
+
+variable "healthy_threshold" {
+  type        = number
+  description = "Number of consecutive successful health checks required to consider the target healthy"
+  default     = 5
+}
+
+variable "unhealthy_threshold" {
+  type        = number
+  description = "Number of consecutive failed health checks required to consider the target unhealthy"
+  default     = 2
+}
+
+variable "timeout" {
+  type        = number
+  description = "Timeout for health checks in seconds"
+  default     = 5
+}
+

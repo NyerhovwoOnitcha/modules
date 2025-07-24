@@ -9,7 +9,10 @@ health_check_path     = "/health"
 enable_access_logs   = true
 access_logs_bucket   = "teleios-ecommerce-alb-logs"
 access_logs_prefix   = "dev-alb"
-
+interval            = 30
+healthy_threshold   = 5
+unhealthy_threshold = 2
+timeout             = 5
 
 
 environment  = "dev"
